@@ -9,7 +9,11 @@ const Stack = createStackNavigator();
 const Routes: React.FC = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          cardStyle: {backgroundColor: '#ddd'},
+        }}>
         <Stack.Screen name="List" component={List} />
       </Stack.Navigator>
     </NavigationContainer>
