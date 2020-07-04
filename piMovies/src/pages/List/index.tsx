@@ -1,43 +1,52 @@
-import React from 'react';
-import {FlatList} from 'react-native';
+import React, {createElement, useState, useCallback, useEffect} from 'react';
 
-import {Card, Container} from './styles';
-import BackgroundImage from '../../components/BackgroundImage';
-
-const image1 =
-  'https://image.tmdb.org/t/p/w300_and_h450_bestv2/cYlzLYlhUXS0kW9T3ttAQ6fvZuV.jpg';
-const image2 =
-  'https://media.fstatic.com/9Nj6GJcDtcgMG4FllePHuegogts=/fit-in/290x478/smart/media/movies/covers/2011/06/71fc1d0bb2bc1483e66941bb2f17d830.jpg';
-const image3 =
-  'https://media.fstatic.com/yQz_oR8G5_y_OOCDHVesLVN3oyA=/fit-in/290x478/smart/media/movies/covers/2019/07/0636548.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg';
-const image4 =
-  'https://media.fstatic.com/tWzEK1v-V__5PEQdCeugAJv0bos=/fit-in/290x478/smart/media/movies/covers/2019/09/3348619.jpg-r_1920_1080-f_jpg-q_x-xxyxx.jpg';
-const image5 =
-  'https://image.tmdb.org/t/p/w600_and_h900_bestv2/5uqxMHM7YLKk6yni4bOE0D6DVz8.jpg';
-
-const items = [
-  {id: 1, src: image1},
-  {id: 2, src: image2},
-  {id: 3, src: image3},
-  {id: 4, src: image4},
-  {id: 5, src: image5},
-];
+import View from './view';
+import {ViewProps} from './types';
+import {api} from '../../services/api';
+import {Movie} from '../../types/Movie';
 
 const List: React.FC = () => {
-  return (
-    <Container>
-      <FlatList
-        data={items}
-        renderItem={({item}) => (
-          <Card>
-            <BackgroundImage src={item.src} />
-          </Card>
-        )}
-        numColumns={2}
-        keyExtractor={(item, index) => index.toString()}
-      />
-    </Container>
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [page, setPage] = useState(1);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    async function loadInitialData() {
+      const response = await api.get('list?page=0&size=10');
+      setMovies(response.data);
+    }
+    loadInitialData();
+  }, []);
+
+  const request = useCallback(
+    async (pg: number) => {
+      try {
+        const response = await api.get(`list?page=${pg}&size=10`);
+        setMovies([...movies, ...response.data]);
+      } catch (e) {
+        console.log(e);
+        setError(
+          'Oh não, tivemos um erro interno. Tente novamente em alguns instantes',
+        );
+      }
+    },
+    [setMovies, movies],
   );
+
+  const nextPage = useCallback(async () => {
+    await setPage(page + 1);
+    await request(page);
+  }, [page, setPage, request]);
+
+  const viewProps: ViewProps = {
+    movies,
+    page,
+    request,
+    error,
+    nextPage,
+  };
+
+  return createElement(View, viewProps);
 };
 
 export default List;
