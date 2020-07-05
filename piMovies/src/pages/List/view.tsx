@@ -6,12 +6,19 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import Alert from '../../components/Alert';
 import {ViewProps} from './types';
 import {Movie} from 'src/types/Movie';
 import {Card, Container, Text, Title} from './styles';
 import BackgroundImage from '../../components/BackgroundImage';
 
-const ListView: React.FC<ViewProps> = ({movies, nextPage, showDetailPage}) => {
+const ListView: React.FC<ViewProps> = ({
+  error,
+  movies,
+  nextPage,
+  handleConfirm,
+  showDetailPage,
+}) => {
   const renderItem = useCallback(
     ({item}: ListRenderItemInfo<Movie>) => {
       if (!item.url) {
@@ -39,17 +46,27 @@ const ListView: React.FC<ViewProps> = ({movies, nextPage, showDetailPage}) => {
   }
 
   return (
-    <Container>
-      <FlatList<Movie>
-        data={movies}
-        renderItem={renderItem}
-        numColumns={2}
-        keyExtractor={(item, index) => index.toString()}
-        onEndReached={nextPage}
-        onEndReachedThreshold={1}
-        ListHeaderComponent={<Text>Encontre os melhores Filmes</Text>}
+    <>
+      <Container>
+        <FlatList<Movie>
+          data={movies}
+          renderItem={renderItem}
+          numColumns={2}
+          keyExtractor={(item, index) => index.toString()}
+          onEndReached={nextPage}
+          onEndReachedThreshold={1}
+          ListHeaderComponent={<Text>Encontre os melhores Filmes</Text>}
+        />
+      </Container>
+      <Alert
+        confirmText=""
+        showCancel={false}
+        onConfirm={handleConfirm}
+        showAlert={!!error}
+        title="Oh Não"
+        message={error}
       />
-    </Container>
+    </>
   );
 };
 

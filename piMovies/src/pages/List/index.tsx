@@ -22,8 +22,13 @@ const List: React.FC = () => {
 
   useEffect(() => {
     async function loadInitialData() {
-      const response = await api.get('list?page=0&size=10');
-      setMovies(response.data);
+      try {
+        const response = await api.get('list?page=0&size=10');
+        setMovies(response.data);
+      } catch (e) {
+        setError('Tivemos um problema. Tente novamente.');
+        setMovies([{} as Movie]);
+      }
     }
     loadInitialData();
   }, []);
@@ -35,9 +40,7 @@ const List: React.FC = () => {
         setMovies([...movies, ...response.data]);
       } catch (e) {
         console.log(e);
-        setError(
-          'Oh não, tivemos um erro interno. Tente novamente em alguns instantes',
-        );
+        setError('Tivemos um problema. Tente novamente.');
       }
     },
     [setMovies, movies],
@@ -48,10 +51,16 @@ const List: React.FC = () => {
     await request(page);
   }, [page, setPage, request]);
 
+  const handleConfirm = useCallback(async () => {
+    setError('');
+    await request(page);
+  }, [setError, request, page]);
+
   const viewProps: ViewProps = {
     movies,
     error,
     nextPage,
+    handleConfirm,
     showDetailPage,
   };
 

@@ -1,7 +1,6 @@
 import React from 'react';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 
-import {ViewProps} from './types';
 import {
   Card,
   Container,
@@ -12,23 +11,32 @@ import {
   Title,
 } from './styles';
 
+import {ViewProps} from './types';
+import Alert from '../../components/Alert';
+
 const ListView: React.FC<ViewProps> = (props) => {
-  const {loading, movie, movieDetail} = props;
+  const {error, handleConfirm, loading, movie, movieDetail} = props;
 
   return (
     <>
+      <Alert
+        confirmText="Tentar novamente"
+        showCancel={false}
+        onConfirm={handleConfirm}
+        showAlert={!!error}
+        title="Oh Não"
+        message={error}
+      />
       <ScrollView>
         <Container>
+          <Image source={{uri: movie.url}} resizeMode="stretch" />
           {loading && <ActivityIndicator size="large" color="#fff" />}
           {!loading && (
             <Card>
-              <Image source={{uri: movie.url}} resizeMode="stretch" />
-              <View>
-                <Title>{movie.name}</Title>
-                <DescriptionContainer>
-                  <Description>{movieDetail.description}</Description>
-                </DescriptionContainer>
-              </View>
+              <Title>{movieDetail.name}</Title>
+              <DescriptionContainer>
+                <Description>{movieDetail.description}</Description>
+              </DescriptionContainer>
             </Card>
           )}
         </Container>

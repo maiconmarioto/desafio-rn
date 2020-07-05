@@ -9,8 +9,9 @@ export type RootStackParamList = {
 export type DetailScreenRouteProp = RouteProp<RootStackParamList, 'Detail'>;
 
 export type ViewProps = {
-  route: RouteProp<RootStackParamList, 'Detail'>;
   movie: Movie;
+  error: string;
+  handleConfirm: () => void;
   loading: boolean;
   movieDetail: MovieDetail;
 };
