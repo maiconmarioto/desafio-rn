@@ -3,3 +3,10 @@ export interface Movie {
   name: string;
   url: string;
 }
+
+export interface MovieDetail {
+  _id: string;
+  name: string;
+  description: string;
+  url: string;
+}

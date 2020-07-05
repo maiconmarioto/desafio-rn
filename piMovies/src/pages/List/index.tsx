@@ -1,4 +1,5 @@
 import React, {createElement, useState, useCallback, useEffect} from 'react';
+import {useNavigation} from '@react-navigation/native';
 
 import View from './view';
 import {ViewProps} from './types';
@@ -9,6 +10,15 @@ const List: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(1);
   const [error, setError] = useState('');
+
+  const navigation = useNavigation();
+
+  const showDetailPage = useCallback(
+    (movie: Movie) => {
+      navigation.navigate('Detail', movie);
+    },
+    [navigation],
+  );
 
   useEffect(() => {
     async function loadInitialData() {
@@ -40,10 +50,9 @@ const List: React.FC = () => {
 
   const viewProps: ViewProps = {
     movies,
-    page,
-    request,
     error,
     nextPage,
+    showDetailPage,
   };
 
   return createElement(View, viewProps);
