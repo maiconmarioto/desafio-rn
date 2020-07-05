@@ -2,8 +2,8 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import List from './pages/List';
-import Detail from './pages/Detail';
+import List from '../pages/List';
+import Detail from '../pages/Detail';
 
 const Stack = createStackNavigator();
 

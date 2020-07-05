@@ -1,7 +1,7 @@
 import React from 'react';
 import {SafeAreaView, StyleSheet, StatusBar, Platform} from 'react-native';
 
-import Routes from './Routes';
+import Routes from './routes';
 
 const App = () => {
   const barStyle = Platform.OS === 'ios' ? 'dark-content' : 'light-content';
